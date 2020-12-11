@@ -26,7 +26,6 @@ class FortiClient:
         subprocess.Popen([self.bin, 'disconnect'])
         logging.info('Disconnected')
 
-
     def detect_binary(self):
         executable = "FortiSSLVPNclient.exe"
 
