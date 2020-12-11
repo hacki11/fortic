@@ -62,11 +62,3 @@ class FortiClient:
                 return bin
 
         raise Exception("Could not find " + executable)
-
-
-
-
-
-
-
-
