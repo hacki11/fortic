@@ -1,3 +1,5 @@
+[![PyPi Version Alt](https://badge.fury.io/py/fortic.svg)](https://pypi.org/project/fortic/)  
+
 # fortic
 Fortinet SSLVPN client command line with KeePass support
 
