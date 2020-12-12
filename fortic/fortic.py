@@ -3,7 +3,7 @@ import sys
 
 import click
 from keepasshttp import keepasshttp
-from fortinet import FortiClient
+from fortic.fortinet import FortiClient
 
 
 @click.group()
