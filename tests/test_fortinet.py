@@ -4,7 +4,7 @@ from fortic.fortinet import FortiClient
 from unittest.mock import patch
 
 
-class MyTestCase(unittest.TestCase):
+class FortinetPathDetectionTest(unittest.TestCase):
 
     @patch('os.path.exists')
     @patch('os.path.isfile')
