@@ -4,6 +4,9 @@ import sys
 import click
 from keepasshttp import keepasshttp
 from fortic.fortinet import FortiClient
+from fortic.keepassxc import KeePassXCClient
+
+schema = "vpn://"
 
 
 @click.group()
@@ -24,18 +27,27 @@ def main(ctx, path):
     - in FORTISSLVPN_HOME environment variable
     - availability in PATH variable
     """
+    logging.basicConfig(format="[%(levelname)-5s] %(message)s", stream=sys.stdout, level=logging.DEBUG)
     ctx.obj = path
     pass
 
 
 @click.command(help="Endpoint address")
 @click.argument("url")
+@click.option("-cd", "--credential-provider", type=click.Choice(['keepasshttp', 'keepassxc'], case_sensitive=False), default='keepassxc', show_default=True, help="Which credential provider shall be used")
 @click.pass_context
-def connect(ctx, url):
+def connect(ctx, url, credential_provider):
     try:
         client = FortiClient(ctx.obj)
-        creds = get_credentials(url)
-        client.connect(url, creds.login, creds.password)
+
+        if credential_provider == 'keepasshttp':
+            creds = get_credentials_keepass(url)
+            client.connect(url, creds.login, creds.password)
+
+        elif credential_provider == 'keepassxc':
+            creds = get_credentials_keepassxc(url)
+            client.connect(url, creds['login'], creds['password'])
+
         sys.exit(0)
     except Exception as e:
         logging.error(e)
@@ -58,17 +70,26 @@ main.add_command(connect)
 main.add_command(disconnect)
 
 
-def get_credentials(url):
-    logging.info("Retrieve credentials for '" + url + "'")
-    credentials = keepasshttp.get(url)
+def get_credentials_keepass(url):
+    search_url = schema + url
+    logging.info("Retrieve KeePass credentials for '" + search_url + "'")
+    credentials = keepasshttp.get(search_url)
     if credentials is None:
         raise Exception(
-            "KeePass entry for '" + url + "' not found! Please add an entry with '" + url + "' as name or url")
+            "KeePass entry for '" + url + "' not found! Please add an entry with '" + search_url + "' as name or url")
 
     logging.info(f"Credentials found (User: {credentials.login})")
     return credentials
 
 
+def get_credentials_keepassxc(url):
+    search_url = schema + url
+    logging.info("Retrieve KeePassXC credentials for '" + search_url + "'")
+    keepassxc = KeePassXCClient()
+    credentials = keepassxc.get_logins(search_url)
+    logging.info(f"Credentials found (User: {credentials[0]['login']})")
+    return credentials[0]
+
+
 if __name__ == '__main__':
-    logging.basicConfig(format="[%(levelname)-5s] %(message)s", stream=sys.stdout, level=logging.DEBUG)
     main()

@@ -6,7 +6,7 @@ with open('README.md') as readme_file:
 setup(
     name='fortic',
     packages=['fortic'],
-    version='0.1',
+    version='0.2',
     license='apache-2.0',
     description='Fortinet SSLVPN command line interface',
     author='Juergen Schmid',
@@ -15,10 +15,12 @@ setup(
     keywords=['vpn', 'fortinet', 'sslvpn', 'cli'],
     install_requires=[
         'click',
-        'keepasshttp'
+        'keepasshttp',
+        'pywin32',
+        'pynacl'
     ],
     entry_points={
-        'console_scripts': ['fortic=fortic.fortic:main'],
+        'console_scripts': ['fortic=fortic.fortinet_cli:main'],
     },
     classifiers=[
         'Intended Audience :: Developers',
