@@ -26,7 +26,7 @@ Options:
   -h, --help       Show this message and exit.
 
 Commands:
-  connect     Endpoint address
+  connect     Connect to Fortinet SSLVPN service
   disconnect  Disconnect
 ```
 
